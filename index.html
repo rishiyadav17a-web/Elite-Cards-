@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Cards | The Premium Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #f7e693;
+            --blue-glow: #00f2ff;
+            --red-glow: #ff0044;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            width: 100%;
+        }
+        .heading-font { font-family: 'Montserrat', sans-serif; }
+        
+        /* Metallic Shiny Gold Header */
+        .shiny-gold {
+            background: linear-gradient(to right, #b49410 0%, #f7e693 22%, #ffffff 45%, #f7e693 50%, #ffffff 55%, #f7e693 78%, #b49410 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 4s linear infinite;
+        }
+
+        /* Metallic Shiny White Header */
+        .shiny-white {
+            background: linear-gradient(to right, #4a4a4a 0%, #ffffff 50%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        /* Metallic Shiny Blue & Red Header - Optimized for Vibrancy */
+        .shiny-elite {
+            background: linear-gradient(to right, #0055ff 0%, #00d4ff 25%, #ffffff 40%, #ffffff 60%, #ff0044 75%, #ff4d00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine { 
+            0% { background-position: -100% center; }
+            100% { background-position: 100% center; }
+        }
+
+        /* Scroll Reveal Utility */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Digital Scanline Effect */
+        .scanlines {
+            position: relative;
+            overflow-x: hidden;
+        }
+        .scanlines::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+        }
+
+        /* Glass HUD Components */
+        .hud-glass {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .perspective-container { perspective: 2000px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(0, 242, 255, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
+        }
+        .animate-glow { animation: pulse-glow 3s infinite; }
+
+        /* Smooth reveal for sections */
+        section {
+            will-change: transform, opacity;
+        }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4",
+        "recharts": "https://esm.sh/recharts@^3.7.0",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "framer-motion": "https://esm.sh/framer-motion@^11.11.11"
+      }
+    }
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="scanlines">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
