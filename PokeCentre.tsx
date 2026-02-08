@@ -1,6 +1,8 @@
 
-import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useMemo } from 'react';
+
+const DIAGNOSTIC_WORDS = "Every card in the Elite Index is subjected to molecular validation within our proprietary Restoration Chambers.".split(" ");
 
 const PokeCentre: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,7 +11,16 @@ const PokeCentre: React.FC = () => {
     offset: ["start end", "end start"]
   });
 
-  // Section visibility and scaling - faster fade in to remove visual gaps
+  // Performance Optimization: Memoize ember positions to prevent regeneration on every scroll update
+  const embers = useMemo(() => [...Array(18)].map(() => ({
+    initialX: Math.random() * 2000 - 1000,
+    scale: Math.random() * 0.6 + 0.4,
+    duration: Math.random() * 3 + 4,
+    delay: Math.random() * 5,
+    drift: Math.random() * 400 - 200
+  })), []);
+
+  // Section visibility and scaling
   const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
   const mainScale = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0.95, 1, 1, 0.95]);
 
@@ -27,8 +38,6 @@ const PokeCentre: React.FC = () => {
   const textY = useTransform(scrollYProgress, [0.05, 0.25], [40, 0]);
   const textOpacity = useTransform(scrollYProgress, [0.05, 0.2], [0, 1]);
 
-  const words = "Every card in the Elite Index is subjected to molecular validation within our proprietary Restoration Chambers.".split(" ");
-
   const getWordClass = (word: string) => {
     const clean = word.replace(/[.,]/g, '').toUpperCase();
     const goldWords = ['ELITE', 'INDEX', 'MOLECULAR', 'VALIDATION', 'RESTORATION'];
@@ -40,35 +49,33 @@ const PokeCentre: React.FC = () => {
     <section ref={containerRef} className="relative h-[180vh] bg-black overflow-visible">
       {/* Dynamic Fire Background Effect */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Warm Glow Base */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_70%,rgba(239,68,68,0.25),transparent_60%)]"></div>
         
-        {/* Animated Embers / Flames */}
-        {[...Array(18)].map((_, i) => (
+        {/* Animated Embers / Flames - Using Memoized Values for Performance */}
+        {embers.map((ember, i) => (
           <motion.div
             key={i}
             initial={{ 
               opacity: 0, 
               y: 500, 
-              x: Math.random() * 2000 - 1000,
-              scale: Math.random() * 0.6 + 0.4
+              x: ember.initialX,
+              scale: ember.scale
             }}
             animate={{ 
               opacity: [0, 0.8, 0], 
               y: -900,
-              x: (Math.random() * 2000 - 1000) + (Math.random() * 400 - 200)
+              x: ember.initialX + ember.drift
             }}
             transition={{ 
-              duration: Math.random() * 3 + 4, 
+              duration: ember.duration, 
               repeat: Infinity, 
-              delay: Math.random() * 5,
+              delay: ember.delay,
               ease: "linear"
             }}
             className="absolute bottom-[-10%] left-1/2 w-72 h-72 rounded-full blur-[90px] bg-gradient-to-t from-orange-500 via-red-600 to-transparent"
           />
         ))}
         
-        {/* Heat Distort/Pulse */}
         <motion.div 
            animate={{ 
              opacity: [0.2, 0.5, 0.2],
@@ -83,10 +90,9 @@ const PokeCentre: React.FC = () => {
         style={{ opacity, scale: mainScale }}
         className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden"
       >
-        {/* Futuristic Background Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,100,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,100,255,0.05)_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse:60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
 
-        {/* Diagnostic Lab Header - Removed pt-24 to close the gap with Hero section */}
+        {/* Diagnostic Lab Header */}
         <div className="relative z-10 text-center max-w-6xl px-6 pointer-events-none pb-8">
           <motion.div style={{ opacity: textOpacity, y: textY }}>
             <h2 className="text-6xl md:text-9xl font-black mb-8 tracking-tighter uppercase leading-none pb-4">
@@ -94,7 +100,7 @@ const PokeCentre: React.FC = () => {
             </h2>
             
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 max-w-4xl mx-auto">
-              {words.map((word, i) => (
+              {DIAGNOSTIC_WORDS.map((word, i) => (
                 <motion.span
                   key={i}
                   className={`text-lg md:text-3xl font-black tracking-tight uppercase leading-tight block sm:inline ${getWordClass(word)}`}
@@ -108,7 +114,6 @@ const PokeCentre: React.FC = () => {
 
         {/* The Scanning Chamber */}
         <div className="relative w-full max-w-lg aspect-[3/4.2] flex items-center justify-center mt-8">
-          
           <div className="absolute inset-0 border border-blue-500/20 rounded-[40px] shadow-[inset_0_0_80px_rgba(37,99,235,0.2)]"></div>
 
           {/* Laser Grid Overlay */}
@@ -120,7 +125,6 @@ const PokeCentre: React.FC = () => {
             <div className="w-5 h-5 bg-blue-400 rounded-full animate-ping"></div>
           </motion.div>
 
-          {/* Floating Asset with 3D Flip */}
           <motion.div 
             style={{ 
               y: cardY, 
@@ -130,18 +134,17 @@ const PokeCentre: React.FC = () => {
             }}
             className="relative z-20 w-[260px] md:w-[360px] perspective-container cursor-pointer transition-shadow duration-500"
           >
-             {/* Glow matched to the "Fire" theme */}
              <div className="absolute inset-[-90px] bg-orange-600/20 blur-[110px] rounded-full animate-glow"></div>
              
-             {/* Front Side: Charizard (Visible after turn around) */}
+             {/* Front Side: Charizard */}
              <div className="w-full rounded-[24px] md:rounded-[30px] border-2 border-white/10 shadow-[0_60px_120px_rgba(0,0,0,1)] overflow-hidden bg-slate-900 relative" style={{ backfaceVisibility: 'hidden' }}>
                <img 
                  src="https://images.pokemontcg.io/base1/4_hires.png" 
                  alt="Scanning Asset Front"
                  className="w-full h-auto block"
+                 loading="lazy"
+                 decoding="async"
                />
-               
-               {/* THE HOLO SHINE - Metallic sweep across the card */}
                <motion.div 
                  animate={{ 
                    left: ['-100%', '200%'],
@@ -154,11 +157,10 @@ const PokeCentre: React.FC = () => {
                  }}
                  className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[25deg] pointer-events-none z-10"
                />
-
                <div className="absolute inset-0 bg-gradient-to-t from-orange-600/15 to-transparent pointer-events-none"></div>
              </div>
 
-             {/* Back Side: Iconic Card Back (Visible initially) */}
+             {/* Back Side */}
              <div 
               className="absolute inset-0 w-full rounded-[24px] md:rounded-[30px] border-2 border-white/10 shadow-[0_60px_120px_rgba(0,0,0,1)] overflow-hidden bg-[#1a2b45]" 
               style={{ 
@@ -170,11 +172,13 @@ const PokeCentre: React.FC = () => {
                  src="https://images.pokemontcg.io/xy12/108_hires.png" 
                  alt="Scanning Asset Back"
                  className="w-full h-auto block"
+                 loading="lazy"
+                 decoding="async"
                />
                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent pointer-events-none"></div>
              </div>
              
-             {/* Dynamic HUD Labels */}
+             {/* HUD Labels */}
              <div className="absolute -left-32 top-10 hud-glass p-5 rounded-2xl w-48 hidden lg:block border-l-4 border-blue-500" style={{ transform: 'translateZ(60px)' }}>
                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Authenticity</p>
                 <p className="text-xl font-black text-white">VERIFIED</p>
@@ -198,13 +202,13 @@ const PokeCentre: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Real-time Console Log */}
+        {/* Real-time Console Log - Fixed JSX Syntax for Vercel Build */}
         <div className="absolute bottom-10 right-10 text-[10px] font-mono text-orange-900/50 text-right leading-loose hidden lg:block uppercase tracking-widest">
-           <p>&gt; SCANNING BIO-METRIC DATA</p>
-           <p>&gt; HARMONIC FREQUENCY: 442.12 HZ</p>
-           <p>&gt; HOLO-DEPTH ANALYZED</p>
-           <p>&gt; PSA PROTOCOL SECURED</p>
-           <p>&gt; DATA SYNC: 100%</p>
+           <p>{" > "} SCANNING BIO-METRIC DATA</p>
+           <p>{" > "} HARMONIC FREQUENCY: 442.12 HZ</p>
+           <p>{" > "} HOLO-DEPTH ANALYZED</p>
+           <p>{" > "} PSA PROTOCOL SECURED</p>
+           <p>{" > "} DATA SYNC: 100%</p>
         </div>
       </motion.div>
     </section>
